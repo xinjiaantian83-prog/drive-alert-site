@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /app
+Disallow: /api/
+
+Host: https://drive-alert.jp
+Sitemap: https://drive-alert.jp/sitemap.xml
