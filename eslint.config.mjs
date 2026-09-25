@@ -1,0 +1,9 @@
+import { FlatCompat } from "@eslint/eslintrc";
+
+const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
+
+const config=[
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  { ignores: [".next/**", "out/**", "next-env.d.ts", "ios/build*/**", "android/**/build/**"] },
+];
+export default config;

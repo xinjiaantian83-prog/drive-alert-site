@@ -1,0 +1,5 @@
+import {describe,expect,it} from "vitest";
+import {parsePriorityGuidancePdf} from "./priority-guidance-pdf";
+import type {SourceDefinition} from "../types";
+const source:SourceDefinition={id:"priority",prefecture:"青森",title:"公式",indexUrl:"https://example.jp",format:"pdf-index",adapter:"priority-guidance-pdf-index"};
+describe("priority guidance PDF",()=>{it("parses routes, areas and Reiwa validity as area alerts",()=>{const text="青森警察署の交通指導取締り重点路線・重点地区（令和８年７月～１２月）\n重点路線・重点地区\n1国道４号\n2大野・浜田地区\n※ 重点路線以外";const rows=parsePriorityGuidancePdf(text,source,"https://example.jp/a.pdf");expect(rows).toHaveLength(2);expect(rows[0]).toMatchObject({policeStation:"青森警察署",route:"国道4号",locationPrecision:"area_only",activeFrom:"2026-07-01T00:00:00+09:00",activeTo:"2026-12-31T23:59:00+09:00"});expect(rows.some(row=>row.locationPrecision==="exact")).toBe(false);});it("keeps unknown validity for review",()=>{const rows=parsePriorityGuidancePdf("令和6年5月\n大淀警察署\n重点路線・・・国道４２３号及び国道１７６号/重点時間帯・・・昼間帯\n速度取締指針",{...source,prefecture:"大阪"},"https://example.jp/b.pdf");expect(rows).toHaveLength(2);expect(rows.every(row=>row.status==="needs_review")).toBe(true);});});

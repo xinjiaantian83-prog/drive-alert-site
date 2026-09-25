@@ -1,0 +1,11 @@
+import type { EnforcementRecord } from "./types";
+import { stableId } from "./normalize";
+
+const rows: Omit<EnforcementRecord, "id">[] = [
+  { prefecture:"徳島", date:"2026-09-01", timeLabel:"午前", startTime:null, endTime:null, location:"徳島市津田町", route:"県道徳島インター線", category:"携帯電話・座席ベルト", policeStation:null, latitude:34.048, longitude:134.577, locationPrecision:"approximate", sourceUrl:"https://www.police.pref.tokushima.jp/24kotuanzen/torimarinew/index.html", sourceTitle:"徳島県警察 交通取締計画", status:"confirmed", reviewReason:null, rawText:"1日 午前 徳島市津田町 県道徳島インター線 携帯・ベルト" },
+  { prefecture:"徳島", date:"2026-09-01", timeLabel:"午後", startTime:null, endTime:null, location:"名西郡石井町", route:"県道石井神山線", category:"速度", policeStation:null, latitude:34.07, longitude:134.443, locationPrecision:"approximate", sourceUrl:"https://www.police.pref.tokushima.jp/24kotuanzen/torimarinew/index.html", sourceTitle:"徳島県警察 交通取締計画", status:"confirmed", reviewReason:null, rawText:"1日 午後 名西郡石井町 県道石井神山線 速度" },
+  { prefecture:"香川", date:"2026-04-10", timeLabel:null, startTime:null, endTime:null, location:null, route:null, category:"交通指導取締り", policeStation:null, latitude:null, longitude:null, locationPrecision:"unresolved", sourceUrl:"https://www.pref.kagawa.lg.jp/police/kotusido/koutsuu/sidou.html", sourceTitle:"香川県警察 交通指導取締り情報", status:"needs_review", reviewReason:"公式ページで場所・路線の詳細を特定できません", rawText:"04月10日（金曜日）" },
+  { prefecture:"高知", date:"2026-09-01", timeLabel:"午前", startTime:null, endTime:null, location:null, route:null, category:"歩行者妨害", policeStation:"高知警察署", latitude:null, longitude:null, locationPrecision:"unresolved", sourceUrl:"https://www.police.pref.kochi.lg.jp/docs/2023103100093/", sourceTitle:"高知県警察 重点交通取締計画", status:"confirmed", reviewReason:null, rawText:"1日 午前 高知署 歩行者妨害" },
+  { prefecture:"愛媛", date:null, timeLabel:null, startTime:null, endTime:null, location:null, route:null, category:null, policeStation:"各警察署", latitude:null, longitude:null, locationPrecision:"unresolved", sourceUrl:"https://www.police.pref.ehime.jp/kotsusidou/koukaitorishimari.htm", sourceTitle:"愛媛県警察 公開交通取締り", status:"needs_review", reviewReason:"署別PDFのレイアウト解析が必要です", rawText:"各警察署の公開交通取締りPDF" }
+];
+export const demoRecords: EnforcementRecord[] = rows.map(r => ({ ...r, id: stableId([r.prefecture,r.date,r.timeLabel,r.location,r.policeStation,r.category]) }));

@@ -1,0 +1,3 @@
+import {describe,expect,it} from "vitest";
+import {assessPriorityPdfText,extractStationPages,extractStationPdfs} from "./two-step-pdf";
+describe("two-step station PDF crawler",()=>{it("collects station pages then PDFs",()=>{const pages=extractStationPages('<a href="/police/a.html">上京警察署</a><a href="/other">案内</a>',"https://example.jp/index");expect(pages).toEqual([{stationName:"上京警察署",pageUrl:"https://example.jp/police/a.html"}]);expect(extractStationPdfs('<a href="docs/a.pdf">速度取締り指針</a>',pages[0])[0].pdfUrl).toBe("https://example.jp/police/docs/a.pdf");});it("rejects imports without an explicit validity range",()=>{expect(assessPriorityPdfText("上京警察署 国道1号 A地区 8:00～12:00").safeForAutomaticImport).toBe(false);});});

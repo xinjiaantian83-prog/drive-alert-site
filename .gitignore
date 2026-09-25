@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+*.tsbuildinfo
+.env
+data/*.sqlite*
+data/raw
+android/.gradle/
+android/**/build/
+android/local.properties
+android/keystore.properties
+android/*.jks
+release-artifacts/

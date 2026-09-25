@@ -1,0 +1,5 @@
+import {describe,expect,it} from "vitest";
+import {activeWindow,isCurrentlyActive,isGeofenceEligible} from "./normalize";
+import type {EnforcementRecord} from "./types";
+const base={id:"x",prefecture:"愛媛",date:"2026-09-24",timeLabel:"午前",startTime:null,endTime:null,location:"松山市",route:null,category:"速度",policeStation:null,latitude:33.8,longitude:132.7,locationPrecision:"approximate",coordinateSource:"GSI",coordinateVerified:true,sourceUrl:"https://example.test",sourceTitle:"source",status:"confirmed",reviewReason:null,rawText:"raw"} satisfies EnforcementRecord;
+describe("有効期間と通知適格性",()=>{it("公表時間をJST期間へ変換する",()=>{const window=activeWindow({...base,startTime:"9:00",endTime:"11:00"});expect(window).toEqual({activeFrom:"2026-09-24T09:00:00+09:00",activeTo:"2026-09-24T11:00:00+09:00"});expect(isCurrentlyActive(window,new Date("2026-09-24T01:00:00Z"))).toBe(true);});it("検証済みapproximateだけ通知対象にする",()=>{expect(isGeofenceEligible(base)).toBe(true);expect(isGeofenceEligible({...base,coordinateVerified:false})).toBe(false);expect(isGeofenceEligible({...base,locationPrecision:"area_only"})).toBe(false);});});
