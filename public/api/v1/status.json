@@ -1,10 +1,10 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-10T21:50:32.033Z",
-  "dataAsOf": "2026-10-10T21:50:30.919Z",
-  "staleAfter": "2026-10-12T09:50:30.919Z",
-  "recordCount": 2330,
+  "generatedAt": "2026-10-11T22:04:28.924Z",
+  "dataAsOf": "2026-10-11T22:04:27.807Z",
+  "staleAfter": "2026-10-13T10:04:27.807Z",
+  "recordCount": 2291,
   "sourceCount": 31,
-  "sha256": "93ad39649d44a052d11895878059456cfa16f1f4752d908fbd8e835b775f5364",
+  "sha256": "259f9a5d0c8538e88292e500081d4e7ae47fa49a7382967c6f9bf8acfe0f48e2",
   "signatureKeyId": "drive-alert-api-2026-01"
 }
