@@ -4,8 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: "17 18 * * *"
 
 permissions:
   contents: read
@@ -29,17 +27,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Restore normalized database and raw sources
-        uses: actions/cache@v4
-        with:
-          path: |
-            data/traffic.sqlite*
-            data/raw
-          key: traffic-sync-${{ github.run_id }}
-          restore-keys: |
-            traffic-sync-
-      - name: Synchronize official sources
-        run: npm run sync:cloud
+      - name: Validate signed production API
+        run: node scripts/validate-published-api.mjs
       - name: Test
         run: npm test
       - name: Type check
