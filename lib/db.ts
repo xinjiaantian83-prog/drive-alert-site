@@ -5,9 +5,11 @@ import { dirname, join } from "node:path";
 import type { EnforcementRecord, LocationPrecision } from "./types";
 
 const dbPath = process.env.DATABASE_PATH ?? join(process.cwd(), "data", "traffic.sqlite");
-mkdirSync(dirname(dbPath), { recursive: true });
-const db = new DatabaseSync(dbPath);
-db.exec(`
+const staticExport = process.env.STATIC_EXPORT === "1";
+if (!staticExport) mkdirSync(dirname(dbPath), { recursive: true });
+const db = new DatabaseSync(dbPath, { readOnly: staticExport });
+
+if (!staticExport) db.exec(`
   PRAGMA journal_mode = WAL;
   CREATE TABLE IF NOT EXISTS source_snapshots (
     id TEXT PRIMARY KEY, source_id TEXT NOT NULL, url TEXT NOT NULL,
@@ -28,7 +30,7 @@ db.exec(`
 `);
 
 const enforcementExists=db.prepare("SELECT 1 AS ok FROM sqlite_master WHERE type='table' AND name='enforcements'").get();
-if(!enforcementExists) db.exec(`CREATE TABLE enforcements (
+if(!staticExport&&!enforcementExists) db.exec(`CREATE TABLE enforcements (
   id TEXT PRIMARY KEY, prefecture TEXT NOT NULL, date TEXT, time_label TEXT,
   start_time TEXT, end_time TEXT, location TEXT, route TEXT, category TEXT,
   police_station TEXT, latitude REAL, longitude REAL, source_url TEXT NOT NULL,
@@ -40,19 +42,21 @@ function ensureColumn(table:string,column:string,definition:string){
   const columns=db.prepare(`PRAGMA table_info(${table})`).all() as Array<{name:string}>;
   if(!columns.some(c=>c.name===column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
 }
-ensureColumn("enforcements","location_precision","TEXT NOT NULL DEFAULT 'unresolved'");
-ensureColumn("enforcements","raw_source_id","TEXT");
-ensureColumn("enforcements","coordinate_source","TEXT");
-ensureColumn("enforcements","coordinate_verified","INTEGER NOT NULL DEFAULT 0");
-ensureColumn("enforcements","active_from","TEXT");
-ensureColumn("enforcements","active_to","TEXT");
-ensureColumn("enforcements","notification_eligible","INTEGER NOT NULL DEFAULT 0");
-ensureColumn("enforcements","area_alert_eligible","INTEGER NOT NULL DEFAULT 0");
-ensureColumn("enforcements","area_scope_type","TEXT");
-ensureColumn("enforcements","area_key","TEXT");
-ensureColumn("enforcements","area_label","TEXT");
-ensureColumn("source_snapshots","parser_version","TEXT");
-db.exec("CREATE INDEX IF NOT EXISTS idx_enforcement_pref_date ON enforcements(prefecture, date)");
+if (!staticExport) {
+  ensureColumn("enforcements","location_precision","TEXT NOT NULL DEFAULT 'unresolved'");
+  ensureColumn("enforcements","raw_source_id","TEXT");
+  ensureColumn("enforcements","coordinate_source","TEXT");
+  ensureColumn("enforcements","coordinate_verified","INTEGER NOT NULL DEFAULT 0");
+  ensureColumn("enforcements","active_from","TEXT");
+  ensureColumn("enforcements","active_to","TEXT");
+  ensureColumn("enforcements","notification_eligible","INTEGER NOT NULL DEFAULT 0");
+  ensureColumn("enforcements","area_alert_eligible","INTEGER NOT NULL DEFAULT 0");
+  ensureColumn("enforcements","area_scope_type","TEXT");
+  ensureColumn("enforcements","area_key","TEXT");
+  ensureColumn("enforcements","area_label","TEXT");
+  ensureColumn("source_snapshots","parser_version","TEXT");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_enforcement_pref_date ON enforcements(prefecture, date)");
+}
 
 export function findLatestSnapshot(sourceId: string) {
   return db.prepare("SELECT content_hash AS contentHash, parser_version AS parserVersion FROM source_snapshots WHERE source_id = ? AND parse_status='parsed' ORDER BY fetched_at DESC LIMIT 1").get(sourceId) as { contentHash:string;parserVersion:string|null } | undefined;
