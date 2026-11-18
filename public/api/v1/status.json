@@ -1,16 +1,16 @@
 {
   "schemaVersion": 3,
-  "generatedAt": "2026-11-17T02:00:43.741Z",
-  "dataAsOf": "2026-11-17T02:00:42.794Z",
-  "staleAfter": "2026-11-18T14:00:42.794Z",
-  "recordCount": 3208,
+  "generatedAt": "2026-11-18T01:07:44.301Z",
+  "dataAsOf": "2026-11-18T01:07:43.146Z",
+  "staleAfter": "2026-11-19T13:07:43.146Z",
+  "recordCount": 3331,
   "counts": {
-    "scheduledEnforcement": 2399,
-    "proximityEligible": 134,
-    "areaAlertEligible": 733,
-    "enforcementGuideline": 809
+    "scheduledEnforcement": 2521,
+    "proximityEligible": 124,
+    "areaAlertEligible": 865,
+    "enforcementGuideline": 810
   },
   "sourceCount": 43,
-  "sha256": "9cf8f53902951b094328ba14a2b307beeff58a31c4c73acb3fb56a36c5956384",
+  "sha256": "7c76e6890a93a24faf7e5ae49e6f1cdd2613d7037030c5ae1e8cc428bd88d3a5",
   "signatureKeyId": "drive-alert-api-2026-01"
 }
